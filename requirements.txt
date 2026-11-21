@@ -1,0 +1,9 @@
+numpy
+pandas
+pyarrow
+xgboost
+scikit-learn
+xarray
+netCDF4
+streamlit>=1.40
+pydeck

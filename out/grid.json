@@ -1,0 +1,21 @@
+{
+  "step_deg": 0.041666666666666664,
+  "lat0": 25.066666666666666,
+  "lon0": -124.76666666666667,
+  "n_lat": 585,
+  "n_lon": 1386,
+  "state": "CO",
+  "bbox_south_north_west_east": [
+    37.0,
+    41.0,
+    -109.05,
+    -102.05
+  ],
+  "n_cells_in_box": 16128,
+  "first_label_date": "1992-01-02",
+  "last_label_date": "2024-12-31",
+  "n_days": 12053,
+  "n_positive_cell_days": 89647,
+  "n_fires": 95051,
+  "note": "feature_date = label_date - 1. Cell-days absent from the parquet are negatives."
+}

@@ -1,0 +1,181 @@
+nohup: ignoring input
+/home/shadeform/.local/lib/python3.10/site-packages/xgboost/core.py:751: UserWarning: [19:18:50] WARNING: /__w/xgboost/xgboost/src/common/error_msg.cc:62: Falling back to prediction using DMatrix due to mismatched devices. This might lead to higher memory usage and slower performance. XGBoost is running on: cuda:0, while the input data is on: cpu.
+Potential solutions:
+- Use a data structure that matches the device ordinal in the booster.
+- Set the device for booster before call to inplace_predict.
+
+This warning will only be shown once.
+
+  return func(**kwargs)
+Loading train [1997]..[2019], val [2020, 2021], test [2022, 2023, 2024]
+GPU found: GPU 0: NVIDIA L40S (UUID: GPU-750afc79-c126-9e26-d9c6-907bcc7a4a4c)
+
+=================== target: y_any ===================
+train rows 4,114,277 (positives 53,053) | val rows 11,789,568 | test rows 17,660,160 (positives 19,969)
+trained on cuda in 5s; best iteration 310
+
+Test-years backtest (flag top k% of cells each day; capture = share of ignitions inside):
+     method  n_test_ignitions  pr_auc roc_auc capture@1% capture@2% capture@5% capture@10% capture@20%
+     random             19969 0.00113   0.500       1.0%       2.0%       5.0%       10.0%       20.0%
+        erc             19969 0.00195   0.664       3.8%       6.5%      13.5%       22.4%       38.2%
+         bi             19969 0.00156   0.600       1.8%       3.6%       8.1%       15.0%       28.0%
+climatology             19969 0.04073   0.919      39.7%      50.9%      65.4%       76.5%       86.9%
+      model             19969 0.04344   0.936      38.4%      51.8%      69.3%       80.6%       89.6%
+  capture@5%: model 69.3% | best baseline 65.4% | lift over random 13.9x
+  capture@10%: model 80.6% | best baseline 76.5% | lift over random 8.1x
+
+Calibration by risk decile (test):
+       mean_predicted observed_rate     rows
+decile                                      
+0            0.000016      0.000008  1766016
+1            0.000019      0.000022  1766016
+2            0.000026      0.000031  1766016
+3            0.000048      0.000057  1766016
+4            0.000062      0.000111  1766016
+5            0.000117      0.000161  1766016
+6            0.000207      0.000253  1766016
+7            0.000391      0.000409  1766016
+8            0.000762      0.000930  1766016
+9            0.006693      0.009326  1766016
+
+Top features by gain share:
+ cell_prior_human      0.180
+cell_prior_any        0.160
+tmmx                  0.083
+month_next            0.079
+vpd                   0.076
+fm1000                0.057
+cell_lat              0.037
+cell_prior_natural    0.036
+erc                   0.034
+tmmx_mean_7d          0.033
+cell_lon              0.031
+is_july4_window       0.022
+
+=================== target: y_human ===================
+train rows 4,114,277 (positives 28,078) | val rows 11,789,568 | test rows 17,660,160 (positives 17,603)
+trained on cuda in 4s; best iteration 192
+
+Test-years backtest (flag top k% of cells each day; capture = share of ignitions inside):
+     method  n_test_ignitions  pr_auc roc_auc capture@1% capture@2% capture@5% capture@10% capture@20%
+     random             17603 0.00100   0.500       1.0%       2.0%       5.0%       10.0%       20.0%
+        erc             17603 0.00165   0.659       3.9%       6.8%      13.9%       22.7%       38.7%
+         bi             17603 0.00140   0.614       1.7%       3.6%       8.1%       15.2%       28.4%
+climatology             17603 0.05552   0.941      44.9%      58.8%      75.9%       85.9%       92.8%
+      model             17603 0.04910   0.948      42.9%      58.3%      75.9%       86.4%       93.4%
+  capture@5%: model 75.9% | best baseline 75.9% | lift over random 15.2x
+  capture@10%: model 86.4% | best baseline 85.9% | lift over random 8.6x
+
+Calibration by risk decile (test):
+       mean_predicted observed_rate     rows
+decile                                      
+0            0.000015      0.000011  1766016
+1            0.000018      0.000018  1766016
+2            0.000020      0.000032  1766016
+3            0.000023      0.000048  1766016
+4            0.000038      0.000058  1766016
+5            0.000069      0.000111  1766016
+6            0.000147      0.000144  1766016
+7            0.000208      0.000243  1766016
+8            0.000527      0.000599  1766016
+9            0.005943      0.008703  1766016
+
+Top features by gain share:
+ cell_prior_human      0.342
+vpd                   0.116
+cell_prior_any        0.102
+month_next            0.083
+cell_prior_natural    0.056
+cell_lat              0.040
+erc                   0.035
+cell_lon              0.023
+fm100                 0.021
+is_july4_window       0.019
+pr                    0.018
+tmmx                  0.018
+
+=================== target: y_natural ===================
+train rows 4,114,277 (positives 17,183) | val rows 11,789,568 | test rows 17,660,160 (positives 2,084)
+trained on cuda in 3s; best iteration 20
+
+Test-years backtest (flag top k% of cells each day; capture = share of ignitions inside):
+     method  n_test_ignitions  pr_auc roc_auc capture@1% capture@2% capture@5% capture@10% capture@20%
+     random              2084 0.00012   0.500       1.0%       2.0%       5.0%       10.0%       20.0%
+        erc              2084 0.00027   0.697       2.6%       4.9%      11.1%       19.9%       34.9%
+         bi              2084 0.00014   0.485       2.1%       3.7%       7.7%       14.1%       24.6%
+climatology              2084 0.00228   0.844      12.3%      21.6%      37.4%       53.9%       69.6%
+      model              2084 0.00337   0.923      14.8%      22.5%      39.1%       56.4%       74.3%
+  capture@5%: model 39.1% | best baseline 37.4% | lift over random 7.8x
+  capture@10%: model 56.4% | best baseline 53.9% | lift over random 5.6x
+
+Calibration by risk decile (test):
+       mean_predicted observed_rate     rows
+decile                                      
+0            0.000001      0.000000  1766016
+1            0.000001      0.000002  1766016
+2            0.000002      0.000002  1766016
+3            0.000003      0.000003  1766016
+4            0.000009      0.000012  1766016
+5            0.000014      0.000019  1766016
+6            0.000036      0.000037  1766016
+7            0.000049      0.000066  1766016
+8            0.000145      0.000128  1766016
+9            0.000875      0.000911  1766016
+
+Top features by gain share:
+ tmmx_mean_7d          0.280
+cell_prior_natural    0.169
+fm1000                0.118
+tmmx                  0.072
+vpd_mean_3d           0.059
+cell_lon              0.056
+doy_cos               0.052
+cell_prior_any        0.045
+bi                    0.030
+pr                    0.019
+rmin                  0.014
+vpd                   0.014
+
+=================== target: y_escaped ===================
+train rows 4,114,277 (positives 2,566) | val rows 11,789,568 | test rows 17,660,160 (positives 489)
+trained on cuda in 3s; best iteration 24
+
+Test-years backtest (flag top k% of cells each day; capture = share of ignitions inside):
+     method  n_test_ignitions  pr_auc roc_auc capture@1% capture@2% capture@5% capture@10% capture@20%
+     random               489 0.00003   0.500       1.0%       2.0%       5.0%       10.0%       20.0%
+        erc               489 0.00007   0.742       3.5%       6.1%      13.0%       22.2%       40.5%
+         bi               489 0.00006   0.677       2.1%       3.6%       8.7%       17.0%       29.1%
+climatology               489 0.00012   0.730       7.2%      10.2%      20.0%       34.2%       53.3%
+      model               489 0.00018   0.852       8.6%      15.5%      29.7%       48.5%       65.4%
+  capture@5%: model 29.7% | best baseline 20.0% | lift over random 5.9x
+  capture@10%: model 48.5% | best baseline 34.2% | lift over random 4.8x
+
+Calibration by risk decile (test):
+       mean_predicted observed_rate     rows
+decile                                      
+0            0.000001      0.000001  1766016
+1            0.000001      0.000002  1766016
+2            0.000001      0.000004  1766016
+3            0.000002      0.000002  1766016
+4            0.000006      0.000006  1766016
+5            0.000014      0.000008  1766016
+6            0.000015      0.000020  1766016
+7            0.000027      0.000035  1766016
+8            0.000048      0.000045  1766016
+9            0.000132      0.000154  1766016
+
+Top features by gain share:
+ erc                   0.315
+cell_prior_any        0.113
+fm1000                0.061
+tmmx                  0.051
+vpd                   0.051
+cell_prior_human      0.035
+month_next            0.035
+cell_prior_natural    0.029
+tmmx_mean_7d          0.026
+cell_lat              0.023
+cell_lon              0.023
+rmin                  0.022
+
+Saved everything under model_out/<target>/  (model.json, calibrator.pkl, metrics.csv, capture_curve.csv, calibration.csv, feature_importance.csv, model_info.json)
