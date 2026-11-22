@@ -120,10 +120,11 @@ Agent 1 has produced today's verified situation: watch zones (groups of high-ris
 numbers and drivers. You turn that into a briefing for fire dispatchers.
 
 Use the tools:
-1. get_situation - statewide numbers, data quality, the zones, and each zone's rule-based watch level.
-2. find_places(zone_id) for EVERY zone - where the zone is (towns inside it, nearest towns, a location label).
-3. get_action_menu(zone_id) for every zone - the actions you may choose for that zone, and which are required.
-4. get_level_rules if you need the level definitions.
+1. get_situation - statewide numbers, data quality, and every zone with its rule-based watch level, location
+   (towns) and action menu (ids you may choose, required ones marked). This is usually all you need.
+2. Optional: find_places(zone_id) for distances/directions, get_action_menu(zone_id, level) if you raise a zone
+   (a higher level can unlock more actions and the full action wording), get_level_rules for definitions.
+Be efficient: finish in as few tool calls as possible.
 
 For each zone decide:
 - level: keep the rule-based level, or raise it by ONE level if you have a concrete reason from the data
@@ -296,7 +297,12 @@ class Agent2:
                        "risk_vs_normal": z.get("risk_vs_normal"), "listed_for": z.get("listed_for"),
                        "conditions": [f"{d['label']} {d['value']} ({d['effect']})" for d in z.get("conditions", [])],
                        "baseline": [f"{d['label']} {d['value']} ({d['effect']})" for d in z.get("baseline", [])],
-                       "hotspots_in_zone": len(self.zone_hotspots[zid])})
+                       "hotspots_in_zone": len(self.zone_hotspots[zid]),
+                       "location": {"label": self.geo[zid]["location_label"],
+                                    "towns_in_zone": [t["name"] for t in self.geo[zid]["towns_in_zone"][:4]],
+                                    "nearest_towns": [f"{t['name']} ({t['distance_km']} km)" for t in
+                                                      self.geo[zid]["nearest_towns"][:3]]},
+                       "action_menu": [{"id": a["id"], "required": a["required"]} for a in self.menu(zid)]})
         out = {"forecast_date": self.fdate, "statewide": sw, "statewide_rule_level": state_level(sw),
                "data_quality": self.h.get("data_quality"), "zones": zs,
                "agent1_notes": self.h.get("notes_for_agent2", "")}
@@ -443,7 +449,8 @@ class Agent2:
             client = client or NemotronClient()
             system = SYSTEM_PROMPT.format(state=self.h.get("state", "Colorado"))
             user = f"Forecast date {self.fdate}. There are {len(self.zones)} zones. Produce the danger and guidance package."
-            raw, _, usage = run_tool_loop(client, system, user, self.tools_schema(), self.handlers(), trace=trace)
+            raw, _, usage = run_tool_loop(client, system, user, self.tools_schema(), self.handlers(), trace=trace,
+                                          max_steps=24)
         res = self.ground(raw)
         res.update({"forecast_date": self.fdate, "weather_date": self.h.get("weather_date"),
                     "mode": self.h.get("mode"), "data_quality": self.h.get("data_quality"),

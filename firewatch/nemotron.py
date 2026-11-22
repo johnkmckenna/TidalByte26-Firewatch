@@ -17,7 +17,7 @@ class NemotronError(Exception):
 
 
 class NemotronClient:
-    def __init__(self, model=None, api_key=None, base_url=None, temperature=0.2, max_tokens=4096, timeout=120):
+    def __init__(self, model=None, api_key=None, base_url=None, temperature=0.2, max_tokens=16384, timeout=120):
         self.model = model or config.NEMOTRON_MODEL
         self.api_key = api_key if api_key is not None else config.NVIDIA_API_KEY
         self.base_url = (base_url or config.NVIDIA_BASE_URL).rstrip("/")
@@ -116,4 +116,5 @@ def run_tool_loop(client, system, user, tools, handlers, max_steps=12, trace=Non
             messages.append({"role": "tool", "tool_call_id": c.get("id", name), "content": text})
             log.append({"step": step, "type": "tool", "name": name, "args": args, "ok": ok,
                         "latency_s": round(time.time() - t1, 2), "result_preview": text[:600]})
-    raise NemotronError(f"No final answer after {max_steps} steps")
+    used = [e["name"] for e in log if e.get("type") == "tool"]
+    raise NemotronError(f"No final answer after {max_steps} steps (tools called: {', '.join(used[-15:])})")

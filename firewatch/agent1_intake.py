@@ -379,7 +379,8 @@ class Agent1:
             system = SYSTEM_PROMPT.format(state=self.meta.get("state", "the study area"), n_priority=self.n_priority)
             user = (f"Mode: {self.mode}. " + (f"Requested weather date: {weather_date}." if weather_date
                     else "Use the latest available weather date.") + " Produce today's situation package.")
-            h, _, usage = run_tool_loop(client, system, user, self.tools_schema(), self.handlers(), trace=trace)
+            h, _, usage = run_tool_loop(client, system, user, self.tools_schema(), self.handlers(), trace=trace,
+                                            max_steps=20)
             h["mode"] = self.mode
         h = self.ground(h)
         h["generated_utc"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
